@@ -1,1 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prism Studios - AJ Account Sign In & Profile Pic</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  body {
+    background: linear-gradient(120deg, #1e1e2f, #2a2a3f);
+    color: #fff;
+    line-height: 1.6;
+  }
+  header {
+    backdrop-filter: blur(10px);
+    background: rgba(30, 30, 47, 0.6);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  nav a, nav button {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    transition: 0.3s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+  }
+  nav a:hover, nav button:hover {
+    color: #00ffff;
+  }
+  .hero {
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  .hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 4rem 2rem;
+  }
+  .feature {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    transition: 0.3s;
+  }
+  .feature:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .feature img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+  }
+  footer {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  /* Sign-In Modal */
+  #signin-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #00000088;
+    backdrop-filter: blur(5px);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+  }
+  #signin-modal .modal-box {
+    background: #1e1e2f;
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+  }
+  #signin-modal h2 {
+    margin-bottom: 1rem;
+  }
+  #signin-modal input {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: #2e2e3f;
+    color: #fff;
+    font-size: 1rem;
+  }
+  #signin-modal button {
+    margin-top: 1.5rem;
+    padding: 0.7rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: #00ffff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  #signin-modal p.status-msg {
+    margin-top: 1rem;
+    font-weight: 600;
+  }
+  #signin-modal .close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+  /* Profile Display */
+  #profile {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-left: 1rem;
+  }
+  #profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #00ffff;
+    cursor: pointer;
+    border: 2px solid #00ffff;
+    transition: 0.3s;
+  }
+  #profile img:hover {
+    opacity: 0.8;
+  }
+  #profile span {
+    font-weight: bold;
+    color: #00ffff;
+    user-select: none;
+  }
+  #signout-btn {
+    margin-left: 1rem;
+    background: #ff5555;
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  #signout-btn:hover {
+    background: #ff2222;
+  }
+  input[type="file"] {
+    display: none;
+  }
+</style>
+</head>
+<body>
 
+<header>
+  <div class="logo">✨ Prism Studios</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Projects</a>
+    <a href="#">Team</a>
+    <a href="#">Contact</a>
+    <a id="sign-in-link" onclick="openModal()">Sign In</a>
+    <div id="profile" style="display:none;">
+      <img id="profile-pic" src="https://img.icons8.com/ios-filled/50/00ffff/user-male-circle.png" alt="Profile Pic" title="Click to change picture" />
+      <span id="profile-name"></span>
+      <button id="signout-btn" onclick="signOut()">Sign Out</button>
+      <input id="file-upload" type="file" accept="image/*" />
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>We Make Games Shine</h1>
+  <p>PrismEngine is public. RenderCore is internal. We build tools that define tomorrow.</p>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <img src="https://img.icons8.com/ios-filled/64/ffffff/code-file.png" alt="Engine" />
+    <h3>PrismEngine</h3>
+    <p>Open-source, dev-friendly, and ready for your next big idea.</p>
+  </div>
+  <div class="feature">
+    <img src="https://img.icons8.com/ios-filled/64/ffffff/idea.png" alt="Innovation" />
+    <h3>RenderCore</h3>
+    <p>Private engine powering bleeding-edge Prism Studios titles.</p>
+  </div>
+  <div class="feature">
+    <img src="https://img.icons8.com/ios-filled/64/ffffff/console.png" alt="Console" />
+    <h3>AJ Devices</h3>
+    <p>Run AJOS 8 on NovaBook & future Prism hardware — now under development.</p>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Prism Studios. All rights reserved.
+</footer>
+
+<!-- Sign-In Modal -->
+<div id="signin-modal">
+  <div class="modal-box">
+    <h2>AJ Account Sign In</h2>
+    <input id="username" type="text" placeholder="Username" autocomplete="username" />
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+    <button onclick="signIn()">Sign In</button>
+    <p class="status-msg" id="signin-status"></p>
+    <button class="close-btn" onclick="closeModal()">✕</button>
+  </div>
+</div>
+
+<script>
+  const users = {
+    // username: { password, displayName, profilePic }
+    "aiden": {
+      password: "prism123",
+      displayName: "Aiden",
+      profilePic: "https://img.icons8.com/ios-filled/50/00ffff/user-male-circle.png"
+    },
+    "khloe": {
+      password: "studio456",
+      displayName: "Khloe",
+      profilePic: "https://img.icons8.com/ios-filled/50/00ffff/user-female-circle.png"
+    }
+  };
+
+  const modal = document.getElementById("signin-modal");
+  const statusMsg = document.getElementById("signin-status");
+  const profileDiv = document.getElementById("profile");
+  const profileName = document.getElementById("profile-name");
+  const profilePic = document.getElementById("profile-pic");
+  const signInLink = document.getElementById("sign-in-link");
+  const fileUpload = document.getElementById("file-upload");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+
+  function openModal() {
+    modal.style.display = "flex";
+    statusMsg.textContent = "";
+    usernameInput.value = "";
+    passwordInput.value = "";
+    usernameInput.focus();
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  function signIn() {
+    const username = usernameInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+    if (!username || !password) {
+      statusMsg.style.color = "#f66";
+      statusMsg.textContent = "Please enter username and password.";
+      return;
+    }
+    if (users[username] && users[username].password === password) {
+      statusMsg.style.color = "#0f0";
+      statusMsg.textContent = "✅ Signed in successfully!";
+      saveSession(username);
+      showProfile(username);
+      closeModal();
+    } else {
+      statusMsg.style.color = "#f66";
+      statusMsg.textContent = "❌ Invalid username or password.";
+    }
+  }
+
+  function showProfile(username) {
+    const user = users[username];
+    profileName.textContent = user.displayName;
+    // Load profile pic from localStorage or default
+    const savedPic = localStorage.getItem(`profilePic_${username}`);
+    profilePic.src = savedPic || user.profilePic;
+    profileDiv.style.display = "flex";
+    signInLink.style.display = "none";
+  }
+
+  function signOut() {
+    localStorage.removeItem("ajUser");
+    profileDiv.style.display = "none";
+    signInLink.style.display = "inline";
+    profilePic.src = ""; 
+  }
+
+  function saveSession(username) {
+    localStorage.setItem("ajUser", username);
+  }
+
+  function loadSession() {
+    const username = localStorage.getItem("ajUser");
+    if (username && users[username]) {
+      showProfile(username);
+    }
+  }
+
+  profilePic.addEventListener("click", () => {
+    fileUpload.click();
+  });
+
+  fileUpload.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      profilePic.src = reader.result;
+      const username = localStorage.getItem("ajUser");
+      if (username) {
+        localStorage.setItem(`profilePic_${username}`, reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Init
+  loadSession();
+</script>
+
+</body>
+</html>
